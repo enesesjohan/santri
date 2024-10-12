@@ -3,105 +3,106 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Responsive Iframe with Modal</title>
-    <link rel="icon" href="/favicon.ico" type="image/x-icon">
+    <title>Aplikasi PSB PontrenMU AL-Furqon Batanghari Nuban Lampung Timur</title>
+    <link rel="icon" type="image/x-icon" href="favicon.ico">
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    
     <style>
-        /* CSS untuk membuat iframe responsif */
+        /* CSS untuk membuat iframe responsif penuh */
         .iframe-container {
-            width: 100vw;
-            height: 100vh;
+            width: 100vw;  /* Menggunakan lebar penuh dari layar perangkat */
+            height: 100vh; /* Menggunakan tinggi penuh dari layar perangkat */
             margin: 0;
             padding: 0;
             border: none;
         }
-
         .iframe-container iframe {
             width: 100%;
             height: 100%;
             border: none;
         }
 
-        /* CSS untuk modal overlay */
+        /* CSS untuk modal fullscreen */
         #loadingModal {
             display: flex;
-            justify-content: center;
             align-items: center;
+            justify-content: center;
             position: fixed;
-            z-index: 9999;
-            width: 100%;
-            height: 100%;
             top: 0;
             left: 0;
-            background-color: rgba(0, 0, 0, 0.7); /* Semi-transparent background */
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 1050;
         }
 
-        /* Spinner loading */
-        .spinner {
-            border: 8px solid #f3f3f3;
-            border-radius: 50%;
-            border-top: 8px solid #3498db;
-            width: 60px;
-            height: 60px;
-            animation: spin 2s linear infinite;
+        /* Style untuk teks loading */
+        .loading-text {
+            margin-top: 10px;
+            color: white;
+            font-size: 18px;
         }
 
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-
-        /* Tombol reload */
-        .reload-btn {
+        /* Tombol Reload akan ditampilkan setelah 6 detik */
+        #reloadButton {
             display: none;
             margin-top: 20px;
-            padding: 10px 20px;
-            background-color: #3498db;
-            color: white;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
         }
-
-        .reload-btn:hover {
-            background-color: #2980b9;
-        }
-
     </style>
 </head>
 <body>
 
-    <!-- Modal Loading -->
+    <!-- Modal untuk loading -->
     <div id="loadingModal">
-        <div>
-            <div class="spinner"></div>
-            <button id="reloadButton" class="reload-btn" onclick="reloadPage()">Reload</button>
+        <div class="text-center">
+            <!-- Spinner Bootstrap -->
+            <div class="spinner-border text-light" role="status">
+                <span class="visually-hidden">Loading...</span>
+            </div>
+            <div class="loading-text">Sedang Loading Aplikasi...</div>
+            <!-- Tombol Reload -->
+            <button id="reloadButton" class="btn btn-warning">Reload</button>
         </div>
     </div>
 
-    <!-- Iframe responsif -->
+    <!-- Kontainer iframe -->
     <div class="iframe-container">
-        <iframe id="iframeContent" src="https://script.google.com/macros/s/AKfycbxROhQ72QFkm0e-UuGcz4R1XSoTUmxtlVmIHc8VFr4R7BqeJPRYoVUozoGof-NJG9ZL7g/exec" allowfullscreen></iframe>
+        <iframe id="myIframe" src="https://script.google.com/macros/s/AKfycbxROhQ72QFkm0e-UuGcz4R1XSoTUmxtlVmIHc8VFr4R7BqeJPRYoVUozoGof-NJG9ZL7g/exec" allowfullscreen></iframe>
     </div>
 
+    <!-- Bootstrap JS and Popper.js -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+
     <script>
-        // Fungsi untuk reload halaman atau redirect ke google setelah 6 detik
-        function reloadPage() {
-            window.location.href = "https://www.google.com";
+        // Fungsi untuk menutup modal setelah iframe dan halaman selesai dimuat
+        function hideLoadingModal() {
+            document.getElementById('loadingModal').style.display = 'none';
         }
 
-        // Menutup modal ketika iframe dan halaman sudah selesai dimuat
-        window.onload = function() {
-            document.getElementById("loadingModal").style.display = "none";
+        // Fungsi untuk menampilkan tombol reload setelah 6 detik
+        function showReloadButton() {
+            const reloadButton = document.getElementById('reloadButton');
+            reloadButton.style.display = 'block';
+            reloadButton.addEventListener('click', function() {
+                window.location.href = 'https://google.com';  // Arahkan ke Google setelah klik Reload
+            });
+        }
+
+        // Deteksi saat iframe selesai dimuat
+        const iframe = document.getElementById('myIframe');
+        iframe.onload = function() {
+            hideLoadingModal();
         };
 
-        // Jika dalam 6 detik iframe tidak selesai load, tampilkan tombol reload
-        setTimeout(function() {
-            var modal = document.getElementById("loadingModal");
-            if (modal.style.display !== "none") {
-                document.getElementById("reloadButton").style.display = "block";
-            }
-        }, 6000);
+        // Timeout untuk menampilkan tombol reload setelah 6 detik jika halaman belum dimuat
+        setTimeout(showReloadButton, 6000);
 
+        // Jika seluruh halaman telah dimuat, tutup modal
+        window.onload = function() {
+            hideLoadingModal();
+        };
     </script>
 
 </body>
